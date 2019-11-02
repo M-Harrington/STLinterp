@@ -8,5 +8,3 @@ Implicitly this method uses the assumption that the NAs in question are missing 
 values are small relative to the number of observations.
 
 An example of how to implement the code using parallel computing is included.
-
-Note that while this code is not written in Rcpp, the underlying decomposition is so the method is not overly slow.  
