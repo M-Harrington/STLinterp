@@ -45,7 +45,7 @@ n_c <- detectCores()-1
 cl<- makeCluster(n_c,type = "PSOCK")
 registerDoParallel(cl)
 
-# dopar over the joblsit (takes about 15 hours)
+# dopar over the joblist
 st2 <- system.time(
   res <- foreach(i=1:3,
                       .packages =c("tidyverse","stlplus"))

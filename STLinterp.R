@@ -57,7 +57,7 @@ mc_cross_val<- function(x, grid_row, k, p){
 # CV score from k-fold method
 kfold_cross_val<- function(x, grid_row, k){
   
-  #take grid_row, translate appropriate elemnts from NA to NULL
+  #take grid_row, translate appropriate elements from NA to NULL
   grid_rowl <- as.list(grid_row)
   for (i in 1:length(grid_row)){ 
     if (is.na(grid_rowl[[i]])){grid_rowl[i]<- list(NULL)}
@@ -109,21 +109,22 @@ kfold_cross_val<- function(x, grid_row, k){
 # values for cross validation grid search.
 # Type either takes on "kfold" or "mc" for kfold or monte carlo CV respectively 
 # The function estimates the best parameters and return the estimated missing 
-# values using the STL decompisition.
-# Note that the parametrs can be single values or vector of values for grid
+# values using the STL decomposition.
+# Note that the parameters can be single values or vector of values for grid
 # Missing values must be given as NAs.
 # Value can be either "best" for returning the best set of hyperparameter grid
 # Or "grid" and returns the entire grid
+# k is either the number of splits in kfold, or number of runs in monte carlo
 #
 # For information on the specific hyperparameters see the stlplus 
 # documentation for more info 
 
-#NOTE: k should be a high proportion of length(ts), otherwise might get errors
+# NOTE: k should be a high proportion of length(ts), otherwise might get errors
 
 STLinterp <- function(x, s.window,  s.degree = 1, t.window = NA,
-                      t.degree = 1, fc.window = NA, fc.degree = NA, n=NA, k=NA,
+                      t.degree = 1, fc.window = NA, fc.degree = NA, k=NA,
                       p=0.95, type ="kfold", value="best"){
-  if (!is.na(n)) {if (n >length(x)/2){stop("n is too large for given time series")}}
+  if (is.na(k)) stop("K must be user-defined, either k-folds or k runs of Monte Carlo")
   
   #init
   df <- list(s.window=s.window, s.degree=s.degree, t.window=t.window, 
@@ -139,7 +140,8 @@ STLinterp <- function(x, s.window,  s.degree = 1, t.window = NA,
         expr = {
           grid$CVscore[i]<-mc_cross_val(x, grid[i,1:(ncol(grid)-1)], k=k,p=p)        },
         error = function(e){
-          message(paste("Problem with: ",paste(grid[i,1:(ncol(grid)-1)], collapse=" ")))
+          message(paste("Grid not evaluated: ",paste(grid[i,1:(ncol(grid)-1)],
+                        " Try increasing k in kfold or p in montecarlo or increasing window parameters", collapse=" ")))
           grid$CVscore[i]<-NA
           
         }
@@ -152,7 +154,8 @@ STLinterp <- function(x, s.window,  s.degree = 1, t.window = NA,
         expr = {
           grid$CVscore[i]<-kfold_cross_val(x=x, grid[i,1:(ncol(grid)-1)], k=k)        },
         error = function(e){ 
-          message(paste("Problem with: ", paste(grid[i,1:(ncol(grid)-1)],collapse=" ")))
+          message(paste("Grid not evaluated: ",paste(grid[i,1:(ncol(grid)-1)],
+                               " Try increasing k in kfold or p in montecarlo or increasing window parameters", collapse=" ")))
           grid$CVscore[i]<-NA
           
         }
