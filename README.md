@@ -4,7 +4,7 @@ A function that uses the [STLplus r package](https://cran.r-project.org/web/pack
 automatically performs one of two forms of cross-validation to optimally select the tuning parameters and then returns
 estimated values for the missing values.
 
-### Check out [this tutorial](https://www.mattrharrington.com/post/fill-in-missing-cyclical-data-using-seasonal-trend-loess-and-cross-validation) for more information!
+#### Check out [this tutorial](https://www.mattrharrington.com/post/fill-in-missing-cyclical-data-using-seasonal-trend-loess-and-cross-validation) for more information
 
 
 Implicitly this method uses the assumption that the NAs in question are missing at random, and that the number of missing
