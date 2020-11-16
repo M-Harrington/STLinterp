@@ -94,13 +94,10 @@ STLinterp <- function(x, s.window,  s.degree = 1, t.window = NA,
 }
 
 #######
-# Subroutine for STLinterp to perform monte carlo cross validation
-# mc_cross_val method takes time series (x), number of sets to average over (k),
-# proportion of datapoints to include in each set (p), single set parameters(grid_row) for
-# stlplus (as a vector). Returns the CV score from Monte Carlo method
-# Note p should be high and k large for higher accuracy
-
-
+# MC and Kfold Subroutines for STLinterp
+# These cross_val methods take time series (x), number of sets/folds to average over (k),
+# proportion of datapoints to include in each set (p), single set of parameters(grid_row) for
+# stlplus (as a vector). Returns the CV score for that hyperparameter's set sof runs.
 
 #' @export
 mc_cross_val<- function(x, grid_row, k, p){
@@ -138,7 +135,7 @@ mc_cross_val<- function(x, grid_row, k, p){
                             fc.window = grid_rowl[[5]], fc.degree = grid_rowl[[6]], ...)
     #reconstruct, compare to actual
     reconstructed <- seasonal(stlobjs[[i]])+trend(stlobjs[[i]])
-    score[i] <-sum((x[sort(CVindicies[[i]])] - reconstructed[sort(CVindicies[[i]])] )^2)
+    score[i] <-mean((x[sort(CVindicies[[i]])] - reconstructed[sort(CVindicies[[i]])] )^2)
   }
   return(mean(score))
 }
@@ -187,7 +184,7 @@ kfold_cross_val<- function(x, grid_row, k){
                       fc.window = grid_rowl[[5]], fc.degree = grid_rowl[[6]], ...)
     #reconstruct, compare to actual
     reconstructed <- seasonal(stlobj)+trend(stlobj)
-    score[i] <-sum((x[sort(CVindicies[[i]])] - reconstructed[sort(CVindicies[[i]])] )^2)
+    score[i] <-mean((x[sort(CVindicies[[i]])] - reconstructed[sort(CVindicies[[i]])] )^2)
   }
   return(mean(score))
 }
